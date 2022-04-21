@@ -12,6 +12,8 @@ const EditAuthor = (props) => {
     refetchQueries: [{ query: ALL_AUTHORS }],
   });
 
+  const animatedComponents = makeAnimated();
+
   const submit = async (event) => {
     event.preventDefault();
 
@@ -36,10 +38,9 @@ const EditAuthor = (props) => {
         <div>
           name
           <Select
-            value={name}
             onChange={handleNameChange}
             options={options}
-            components={makeAnimated()}
+            components={animatedComponents}
           />
         </div>
         <div>

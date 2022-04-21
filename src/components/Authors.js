@@ -9,10 +9,8 @@ const Authors = (props) => {
   if (result.loading) {
     return <p>Loading ...</p>;
   }
-  console.log(result);
 
   const authors = result.data.allAuthors;
-  console.log(authors);
 
   return (
     <div>

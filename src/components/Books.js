@@ -3,6 +3,7 @@ import { ALL_BOOKS } from "../services/graphql";
 
 const Books = (props) => {
   const result = useQuery(ALL_BOOKS);
+  console.log(result);
 
   //if (!props.show) {
   if (result.loading) {
@@ -10,24 +11,25 @@ const Books = (props) => {
   }
 
   const books = result.data.allBooks;
-  console.log(books);
 
   return (
     <div>
-      <h2>books</h2>
+      <h2>books & MUCH MORE!</h2>
 
       <table>
         <tbody>
           <tr>
-            <th></th>
-            <th>author</th>
-            <th>published</th>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Published</th>
+            <th>Genres</th>
           </tr>
           {books.map((a) => (
             <tr key={a.title}>
               <td>{a.title}</td>
-              <td>{a.author}</td>
+              <td>{a.author.name}</td>
               <td>{a.published}</td>
+              <td>{a.genres.join(", ")}</td>
             </tr>
           ))}
         </tbody>
