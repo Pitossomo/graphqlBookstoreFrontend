@@ -11,26 +11,40 @@ import LoginForm from "./components/LoginForm";
 import NewBook from "./components/NewBook";
 import Notify from "./components/Notify";
 import Recommended from "./components/Recommended";
-import { BOOK_ADDED } from "./services/graphql";
+import { ALL_AUTHORS, ALL_BOOKS, BOOK_ADDED, ME } from "./services/graphql";
 
 const App = () => {
   const [page, setPage] = useState("authors");
   const [token, setToken] = useState(null);
-  const [errorMessage, setError] = useState(null);
+  const [message, setMessage] = useState({ text: "", type: null }); // type: succes or error or attention
   const client = useApolloClient();
+
+  const allBooksResult = useQuery(ALL_BOOKS);
+  const allAuthorsResult = useQuery(ALL_AUTHORS);
+  const meResult = useQuery(ME);
 
   useSubscription(BOOK_ADDED, {
     onSubscriptionData: ({ subscriptionData }) => {
-      console.log(subscriptionData);
-      window.alert(subscriptionData.title);
+      const addedBook = subscriptionData.data.bookAdded;
+      setMessage({ text: `book ${addedBook.title} added`, type: "success" });
+
+      client.cache.updateQuery({ query: ALL_BOOKS }, ({ allBooks }) => {
+        return { allBooks: allBooks.concat(addedBook) };
+      });
     },
   });
 
   const pagesToShow = {
-    authors: <Authors show={page === "authors"} />,
-    books: <Books show={page === "books"} />,
+    authors: <Authors result={allAuthorsResult} show={page === "authors"} />,
+    books: <Books result={allBooksResult} show={page === "books"} />,
     addBook: <NewBook show={page === "addBook"} />,
-    recommended: <Recommended show={page === "recommended"} />,
+    recommended: (
+      <Recommended
+        booksResult={allBooksResult}
+        meResult={meResult}
+        show={page === "recommended"}
+      />
+    ),
   };
 
   const logout = () => {
@@ -42,9 +56,9 @@ const App = () => {
   if (!token) {
     return (
       <div>
-        <Notify errorMessage={errorMessage} />
+        <Notify {...message} />
         <h2>Login</h2>
-        <LoginForm setToken={setToken} setError={setError} />
+        <LoginForm setToken={setToken} setMessage={setMessage} />
       </div>
     );
   }

@@ -1,11 +1,8 @@
-import { useQuery } from "@apollo/client";
 import { useState } from "react";
-import { ALL_BOOKS } from "../services/graphql";
 import BookTable from "./BookTable";
 
-const Books = (props) => {
+const Books = ({ result }) => {
   const [genreFilter, setGenreFilter] = useState(null);
-  const result = useQuery(ALL_BOOKS);
 
   //if (!props.show) {
   if (result.loading) {

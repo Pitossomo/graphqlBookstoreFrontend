@@ -2,13 +2,13 @@ import { useMutation } from "@apollo/client";
 import { useEffect, useState } from "react";
 import { LOGIN } from "../services/graphql";
 
-const LoginForm = ({ setError, setToken }) => {
+const LoginForm = ({ setMessage, setToken }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const [login, result] = useMutation(LOGIN, {
     onError: (error) => {
-      setError(error.graphQLErrors[0].message);
+      setMessage({ text: error.graphQLErrors[0].message, type: "error" });
     },
   });
 

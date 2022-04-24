@@ -1,10 +1,6 @@
-import { useQuery } from "@apollo/client";
-import { ALL_AUTHORS } from "../services/graphql";
 import EditAuthor from "./EditAuthor";
 
-const Authors = (props) => {
-  const result = useQuery(ALL_AUTHORS);
-
+const Authors = ({ result }) => {
   //if (!props.show) {
   if (result.loading) {
     return <p>Loading ...</p>;
