@@ -1,4 +1,9 @@
-import { useApolloClient } from "@apollo/client";
+import {
+  useQuery,
+  useMutation,
+  useSubscription,
+  useApolloClient,
+} from "@apollo/client";
 import React, { useState } from "react";
 import Authors from "./components/Authors";
 import Books from "./components/Books";
@@ -6,12 +11,20 @@ import LoginForm from "./components/LoginForm";
 import NewBook from "./components/NewBook";
 import Notify from "./components/Notify";
 import Recommended from "./components/Recommended";
+import { BOOK_ADDED } from "./services/graphql";
 
 const App = () => {
   const [page, setPage] = useState("authors");
   const [token, setToken] = useState(null);
   const [errorMessage, setError] = useState(null);
   const client = useApolloClient();
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      console.log(subscriptionData);
+      window.alert(subscriptionData.title);
+    },
+  });
 
   const pagesToShow = {
     authors: <Authors show={page === "authors"} />,
